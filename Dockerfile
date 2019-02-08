@@ -1,22 +1,15 @@
 FROM postgres:10-alpine
-MAINTAINER Jonatan Heyman <http://heyman.info>
+MAINTAINER Delisson Silva <delisson@gmail.com>
 
 # Install dependencies
 RUN apk update && apk add --no-cache --virtual .build-deps && apk add \
-    bash make curl openssh git 
+    bash make curl openssh git && apk -Uuv add groff less python3 \
+    && python3 -m pip install boto3 awscli && rm /var/cache/apk/*
 
-# Install aws-cli
-RUN apk -Uuv add groff less python py-pip && pip install awscli
-# Cleanup
-RUN apk --purge -v del py-pip && rm /var/cache/apk/*
+RUN mkdir /var/app
+COPY main.py entry.sh /var/app/
 
+RUN chmod +x /var/app/entry.sh
 
-VOLUME ["/data/backups"]
-
-ENV BACKUP_DIR /data/backups
-
-ADD . /backup
-
-ENTRYPOINT ["/backup/entrypoint.sh"]
-
-CMD crond -f -d 8
+ENTRYPOINT ["/var/app/entry.sh"]
+CMD ["backup"]
