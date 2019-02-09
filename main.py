@@ -23,7 +23,7 @@ logging_root.addHandler(handler)
 
 def get_database_dump(compress, host, port, database, user, password):
     proc_environment = os.environ.copy()
-    proc_environment['PG_PASSWORD'] = password
+    proc_environment['PGPASSWORD'] = password
 
     output = subprocess.check_output(
         ['pg_dump', '-E', 'utf-8', '-w', '-O', '-h', host, '-U', user, '-p', str(port), database],
@@ -76,7 +76,7 @@ def get_sql_from_s3(compressed, s3_bucket, s3_key):
 
 def run_sql_file(sql_file_path, host, port, user, password, database):
     proc_environment = os.environ.copy()
-    proc_environment['PG_PASSWORD'] = password
+    proc_environment['PGPASSWORD'] = password
 
     subprocess.check_call(
         ['psql', '-q', '-d', database, '-f', sql_file_path, '-h', host, '-U', user, '-p', str(port)],

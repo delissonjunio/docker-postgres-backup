@@ -10,9 +10,9 @@ fi
 
 S3_ARGS=''
 if [ ! -z "$S3_PREFIX" ]; then
-    S3_ARGS="--s3-prefix '$S3_PREFIX'"
+    S3_ARGS="--s3-prefix $S3_PREFIX"
 elif [ ! -z "$S3_KEY" ]; then
-    S3_ARGS="--s3-key '$S3_KEY'"
+    S3_ARGS="--s3-key $S3_KEY"
 fi
 
 COMPRESSED=''
@@ -20,4 +20,9 @@ if [ ! -z "$COMPRESSED" ]; then
     COMPRESSED='--compressed'
 fi
 
-python3 /var/app/main.py "$MODE_ARG" --database "$DB_NAME" --user "$DB_USER" --host "$DB_HOST" --s3-bucket "$S3_BUCKET" $S3_ARGS $COMPRESSED
+PORT_ARG=''
+if [ ! -z "$DB_PORT" ]; then
+    PORT_ARG="--port $DB_PORT"
+fi
+
+python3 /var/app/main.py "$MODE_ARG" --database "$DB_NAME" --user "$DB_USER" --host "$DB_HOST" --s3-bucket "$S3_BUCKET" $S3_ARGS $COMPRESSED $PORT_ARG
